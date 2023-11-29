@@ -1,0 +1,110 @@
+body {
+    background: rgb(36,74,186);
+    background: linear-gradient(90deg, rgba(36,74,186,1) 0%, rgba(22,104,115,1) 49%, rgba(42,143,143,1) 100%);
+    font-family: "Sentinel A", "Sentinel B", Georgia, "Times New Roman", Times, serif;
+}
+
+.search-container {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    display: flex;
+    align-content: space-between;
+    gap: 10px;
+}
+
+table{
+    border:1px solid #234465;
+    padding: 1%;
+    margin: 0 auto;
+    width: 70%;
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+}
+
+table th{
+    text-decoration: underline;
+    text-align: center;
+}
+
+table tbody td{
+    text-align: center;
+    border-bottom:1px solid black;
+    padding: 0.5%;
+}
+
+table tbody tr:nth-child(even){
+    background-color: #234465;
+    color: white
+}
+
+table tbody tr:nth-child(odd){
+    color: #234465;
+    border-bottom: 1px solid black;
+}
+
+table tbody tr:nth-child(odd) button{
+    background: #234465;
+    color:white;
+}
+
+table tbody tr:nth-child(even) button{
+    background: white;
+    color:#234465;
+}
+
+table {
+    background-color: #ffffff;
+}
+
+table tr td:not(:last-child):hover{
+    text-decoration: underline;
+}
+
+table button{
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 8%;
+}
+
+table button:hover{
+    text-decoration: underline;
+}
+
+button#loadBooks{
+    display:block;
+    padding:1%;
+    margin: 1% auto;
+    border-radius: 4px;
+}
+
+
+label, input{
+    display:block;
+    margin: 0 auto;
+}
+
+#form input{
+    margin-bottom: 1%;
+    width: 25%;
+}
+
+#form{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#form button{
+    display:block;
+    margin: 1% auto;
+    border-radius: 4px;
+    background-color: #234465;
+    color:white;
+    border: none;
+    padding: 0.5%;
+}

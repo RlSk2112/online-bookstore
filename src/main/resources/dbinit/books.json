@@ -1,0 +1,42 @@
+[
+  {
+    "title":"Game of Thrones",
+    "ISBN": 1235767890123,
+    "author": 1
+  },
+  {
+    "title":"Harry Potter",
+    "ISBN": 1214562890124,
+    "author": 2
+  },
+  {
+    "title":"Madame Bovary",
+    "ISBN": 1235432890123,
+    "author": 3
+  },
+  {
+    "title":"The Green Mile",
+    "ISBN": 2315967890120,
+    "author": 4
+  },
+  {
+    "title":"The Boogeyman",
+    "ISBN": 1234567843210,
+    "author": 4
+  },
+  {
+    "title":"Fairy Tale",
+    "ISBN": 1434067839123,
+    "author": 4
+  },
+  {
+    "title":"It",
+    "ISBN": 1034567890123,
+    "author": 4
+  },
+  {
+    "title":"The Shining",
+    "ISBN": 2134567890123,
+    "author": 4
+  }
+]
