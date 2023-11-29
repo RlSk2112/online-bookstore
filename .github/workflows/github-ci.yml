@@ -34,5 +34,5 @@ jobs:
 
       - name: Docker build
         run:
-          docker build -t "ghcr.io/rlsk2112/online-bookstore" .
-          docker push "ghcr.io/rlsk2112/online-bookstore"
+          docker build -t "ghcr.io/rlsk2112/online-bookstore:online-bookstore" .
+          docker push "ghcr.io/rlsk2112/online-bookstore:online-bookstore"
