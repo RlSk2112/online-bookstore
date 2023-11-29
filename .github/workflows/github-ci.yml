@@ -1,0 +1,38 @@
+name: online-bookstore ci
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        users: actions/checkout@v3
+
+      - name: Setup Maven and Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run unit tests
+        run: mvn test
+
+      - name: Run integration tests
+        run: mvn verify
+
+      - name: Docker login
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Docker build
+        run:
+          docker build -t "ghcr.io/rlsk2112/online-bookstore" .
+          docker push "ghcr.io/rlsk2112/online-bookstore"
