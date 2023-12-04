@@ -5,9 +5,14 @@ import com.google.gson.GsonBuilder;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AppConfig {
+
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
     public ModelMapper getModelMapper() {
@@ -16,7 +21,9 @@ public class AppConfig {
 
     @Bean
     public Gson getGson() {
-        return new GsonBuilder().setPrettyPrinting()
+        return new GsonBuilder()
+                .serializeNulls()
+                .setPrettyPrinting()
                 .create();
     }
 }

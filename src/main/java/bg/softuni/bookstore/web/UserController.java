@@ -10,9 +10,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     @GetMapping("/login")
-    public ModelAndView modelAndView(ModelAndView modelAndView) {
+    public ModelAndView login(ModelAndView modelAndView) {
         modelAndView.setViewName("login");
         return modelAndView;
     }
 
+
+    @GetMapping("/register")
+    public ModelAndView register(ModelAndView modelAndView) {
+        modelAndView.setViewName("register");
+        return modelAndView;
+    }
 }
