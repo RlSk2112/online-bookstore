@@ -5,6 +5,6 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features", glue = "bg/softuni/bookstore/bdd/steps")
+@CucumberOptions(features = "classpath:features", glue = "/bg/softuni/bookstore/bdd/steps")
 public class CucumberIT {
 }

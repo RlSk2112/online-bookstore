@@ -16,4 +16,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAll(@PageableDefault(size = 5, sort = "id") Pageable pageable);
 
     Optional<Book> findByISBN(String ISBN);
+
+    void deleteByISBN(String isbn);
+
+    boolean existsByISBN(String isbn);
 }

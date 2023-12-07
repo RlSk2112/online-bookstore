@@ -5,16 +5,14 @@ import bg.softuni.bookstore.service.AuthorService;
 import bg.softuni.bookstore.service.BookService;
 import bg.softuni.bookstore.service.CommentService;
 import bg.softuni.bookstore.service.RoleService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 @Component
-@Profile("docker")
 @RequiredArgsConstructor
 public class DBInitializer implements CommandLineRunner {
 

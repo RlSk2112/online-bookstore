@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +54,9 @@ public class CommentService {
 
     private String readBooksFromFile() throws IOException {
         return Files.readString(Path.of(COMMENTS_FILE_PATH));
+    }
+
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
     }
 }

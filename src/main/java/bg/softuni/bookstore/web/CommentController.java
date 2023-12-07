@@ -1,7 +1,7 @@
 package bg.softuni.bookstore.web;
 
-import bg.softuni.bookstore.domain.dto.author.ExportAuthorDto;
-import bg.softuni.bookstore.service.AuthorService;
+import bg.softuni.bookstore.domain.entity.Comment;
+import bg.softuni.bookstore.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookstore/authors")
+@RequestMapping("/api/bookstore/comments")
 @RequiredArgsConstructor
-public class AuthorController {
+public class CommentController {
 
-    private final AuthorService authorService;
+    private final CommentService commentService;
 
     @GetMapping("/all")
-    public List<ExportAuthorDto> getAllAuthors() {
-        return authorService.getAllAuthors();
+    public List<Comment> getAllComments() {
+        return commentService.getAllComments();
     }
 }

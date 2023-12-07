@@ -32,14 +32,6 @@ function attachEvents() {
         pageNum: document.getElementById('page-num')
     }
 
-    const newDomElements = {
-        formTitle: allDomElements.form.children[0],
-        titleInput: allDomElements.form.children[2],
-        authorInput: allDomElements.form.children[4],
-        submitButton: allDomElements.form.children[5],
-    }
-
-
     let allCommentPagesObject = {};
 
     let page = 1;
@@ -47,13 +39,12 @@ function attachEvents() {
     let commentsPage = 1;
     let allCommentsRecords = 0;
 
-    const BASE_URL = '/online-bookstore';
-    const COMMENTS_URL = '/online-bookstore/comments';
+    const BASE_URL = '/api/bookstore';
+    const COMMENTS_URL = '/api/bookstore/comments';
 
 
     allDomElements.loadButton.addEventListener('click', loadFirstPage);
     allDomElements.searchButton.addEventListener('click', searchHandler);
-    newDomElements.submitButton.addEventListener('click', createHandler);
     allDomElements.searchButton.setAttribute('disabled', 'true');
     allDomElements.prevPage.setAttribute('disabled', 'true');
     allDomElements.nextPage.setAttribute('disabled', 'true');
@@ -117,117 +108,7 @@ function attachEvents() {
         loadHandler();
     }
 
-    function createHandler(event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        if (newDomElements.authorInput.value === '' || newDomElements.titleInput.value === '') {
-            return;
-        }
-
-
-        let currentTitle = newDomElements.titleInput.value;
-        let currentAuthor = newDomElements.authorInput.value;
-
-        let payload = JSON.stringify({
-            title: currentTitle,
-            author: currentAuthor
-        });
-
-        let requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: payload
-        };
-
-
-        fetch(BASE_URL, requestOptions)
-            .then(() => {
-                loadHandler(event);
-                newDomElements.authorInput.value = '';
-                newDomElements.titleInput.value = '';
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-    }
-
     let searchedId;
-
-    function editHandler(event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        let searchedTr = this.parentNode.parentNode;
-
-        searchedId = searchedTr.id;
-        newDomElements.formTitle.textContent = 'Edit FORM';
-
-
-        let tds = Array.from(searchedTr.children);
-        let firstTd = tds[1];
-        let secondTd = tds[2];
-
-
-        newDomElements.titleInput.value = firstTd.textContent;
-        newDomElements.authorInput.value = secondTd.textContent;
-
-
-        allDomElements.form.children[5].remove();
-
-        let saveButton = document.createElement('button');
-        saveButton.textContent = 'Save';
-        saveButton.addEventListener('click', saveHandler);
-
-        allDomElements.form.appendChild(saveButton);
-
-    }
-
-    function saveHandler(event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        let payload = JSON.stringify({
-            title: newDomElements.titleInput.value,
-            author: newDomElements.authorInput.value,
-            id: searchedId
-        });
-
-        let requestOptions = {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: payload
-        };
-
-        fetch(`${BASE_URL}/${searchedId}`, requestOptions)
-            .then(() => {
-                loadHandler();
-                newDomElements.titleInput.value = '';
-                newDomElements.authorInput.value = '';
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-
-        this.remove();
-        let submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.addEventListener('click', createHandler);
-        allDomElements.form.appendChild(submitButton);
-
-    }
 
     function deleteHandler(event) {
 
@@ -579,13 +460,13 @@ function attachEvents() {
         let url;
         if (bookTitle !== '' && authorToSearch !== '') {
 
-            url = `/online-bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&author=${encodeURIComponent(authorToSearch)}&page=${page}`;
+            url = `/api/bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&author=${encodeURIComponent(authorToSearch)}&page=${page}`;
         } else if (bookTitle === '' && authorToSearch !== '') {
-            url = `/online-bookstore/books/all?author=${encodeURIComponent(authorToSearch)}&page=${page}`;
+            url = `/api/bookstore/books/all?author=${encodeURIComponent(authorToSearch)}&page=${page}`;
         } else if (bookTitle !== '' && authorToSearch === '') {
-            url = `/online-bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&page=${page}`;
+            url = `/api/bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&page=${page}`;
         } else if (bookTitle === '' && authorToSearch === '') {
-            url = `/online-bookstore/books/all?page=${page}`;
+            url = `/api/bookstore/books/all?page=${page}`;
         }
 
         return url;
@@ -607,7 +488,6 @@ function attachEvents() {
         let commentsButton = document.createElement('button');
         commentsButton.textContent = 'Comments';
         commentsButton.addEventListener('click', commentsHandler);
-        editButton.addEventListener('click', editHandler);
         deleteButton.addEventListener('click', deleteHandler);
         tdButtons.appendChild(editButton);
         tdButtons.appendChild(deleteButton);

@@ -1,5 +1,6 @@
 package bg.softuni.bookstore.service;
 
+import bg.softuni.bookstore.domain.dto.UpdateBookDto;
 import bg.softuni.bookstore.domain.dto.book.ExportBookDto;
 import bg.softuni.bookstore.domain.dto.book.ImportBookDto;
 import bg.softuni.bookstore.domain.entity.Author;
@@ -76,5 +77,20 @@ public class BookService {
 
     public long getCount() {
         return bookRepository.count();
+    }
+
+    public void delete(String isbn) {
+        if (!bookRepository.existsByISBN(isbn)) {
+            throw new IllegalArgumentException("No book with given isbn was found!");
+        }
+        bookRepository.deleteByISBN(isbn);
+    }
+
+    public void addBook(ImportBookDto book) {
+        //ToDo
+    }
+
+    public void updateBook(String isbn, UpdateBookDto bookImportDto) {
+        //ToDo
     }
 }
