@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Getter
 public class LoginUserDto implements Serializable {
 
-    private String userName;
+    private String username;
 
     private String password;
 }

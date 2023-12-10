@@ -1,0 +1,14 @@
+[
+  {
+    "username": "peshoV",
+    "email": "pesho123@abv.bg",
+    "password": "topsecret",
+    "confirmPassword": "topsecret"
+  },
+  {
+    "username": "goshoV",
+    "email": "gosho321@abv.bg",
+    "password": "topsecret",
+    "confirmPassword": "topsecret"
+  }
+]

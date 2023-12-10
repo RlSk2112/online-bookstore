@@ -1,10 +1,7 @@
 package bg.softuni.bookstore.init;
 
 import bg.softuni.bookstore.domain.constant.RoleName;
-import bg.softuni.bookstore.service.AuthorService;
-import bg.softuni.bookstore.service.BookService;
-import bg.softuni.bookstore.service.CommentService;
-import bg.softuni.bookstore.service.RoleService;
+import bg.softuni.bookstore.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -24,40 +21,34 @@ public class DBInitializer implements CommandLineRunner {
 
     private final RoleService roleService;
 
+    private final UserService userService;
+
     @Override
     public void run(String... args) throws Exception {
         seedRoles();
         seedAuthors();
         seedBooks();
         seedComments();
+        seedUsers();
     }
 
     private void seedRoles() {
-        if (roleService.areImported()) {
-            return;
-        }
-        Arrays.stream(RoleName.values())
-                .forEach(roleService::addRole);
+        roleService.importRoles();
     }
 
     private void seedBooks() throws IOException {
-        if (bookService.areImported()) {
-            return;
-        }
         bookService.importBooks();
     }
 
     private void seedAuthors() throws IOException {
-        if (authorService.areImported()) {
-            return;
-        }
         authorService.importAuthors();
     }
 
     private void seedComments() throws IOException {
-        if (commentService.areImported()) {
-            return;
-        }
         commentService.importAllComments();
+    }
+
+    private void seedUsers() throws IOException {
+        userService.importUsers();
     }
 }

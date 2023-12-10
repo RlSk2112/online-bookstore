@@ -14,11 +14,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ExportBookDto implements Serializable {
 
+    private long id;
+
     private String title;
-
-    private String publicationDate;
-
-    private Double price;
 
     private String isbn;
 

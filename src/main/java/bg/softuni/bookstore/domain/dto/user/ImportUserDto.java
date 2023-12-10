@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class ImportUserDto implements Serializable {
 
     @NotBlank
-    private String userName;
+    private String username;
 
     @Email
     private String email;

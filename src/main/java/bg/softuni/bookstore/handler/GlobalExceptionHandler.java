@@ -1,4 +1,4 @@
-package bg.softuni.bookstore.aop;
+package bg.softuni.bookstore.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

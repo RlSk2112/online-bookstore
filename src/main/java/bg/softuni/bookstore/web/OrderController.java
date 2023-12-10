@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/bookstore/orders")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("/all")
+    @GetMapping
     public Map<List<ExportOrderDto>, Long> getAllOrders() {
         return Map.of(orderService.getAllOrders(), orderService.getCount());
     }

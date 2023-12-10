@@ -1,29 +1,9 @@
-window.addEventListener('load', attachEvents);
-// window.onhashchange = function () {
-//
-//     let views = {
-//         "#/view1": {
-//             file: "/api/bookstore/comments",
-//             model: {}
-//         }
-//     }
-//
-//     let view = views[window.location.hash];
-//     fetch(view.file)
-//         .then((resp) => resp.text())
-//         .then(data => document.getElementsByTagName("html")[0].innerHTML = data)
-//         .catch((err) => {
-//             console.error(err);
-//         });
-// }
-
-function attachEvents() {
+function booksHandler() {
 
     const allDomElements = {
         loadButton: document.getElementById('loadBooks'),
         table: document.getElementsByTagName('table')[0],
         tbody: document.getElementsByTagName('tbody')[0],
-        form: document.getElementById('form'),
         searchInput: document.getElementById('search-input'),
         searchAuthor: document.getElementById("search-author"),
         searchButton: document.getElementById('search-button'),
@@ -39,7 +19,7 @@ function attachEvents() {
     let commentsPage = 1;
     let allCommentsRecords = 0;
 
-    const BASE_URL = '/api/bookstore';
+    const BASE_URL = '/api/bookstore/books';
     const COMMENTS_URL = '/api/bookstore/comments';
 
 
@@ -52,7 +32,6 @@ function attachEvents() {
     allDomElements.nextPage.addEventListener('click', nextHandler);
 
     function loadHandler(event) {
-
         if (event) {
             event.preventDefault();
         }
@@ -67,12 +46,14 @@ function attachEvents() {
         fetch(url)
             .then((resp) => resp.json())
             .then((data) => {
-
-                let {bookList, totalRecords} = data;
+                let values = Array.from(Object.values(data));
+                let [totalRecords, bookList] = values;
+                console.log(bookList);
                 totalPages = Math.ceil(totalRecords / 5);
                 allRecords = totalRecords;
                 allDomElements.pageNum.textContent = `Page ${page} of ${totalPages}`;
                 allDomElements.tbody.innerHTML = '';
+
 
                 let currentBookNum = 1;
                 if (page > 1) {
@@ -81,11 +62,12 @@ function attachEvents() {
                 for (const current of bookList) {
                     let {title, author, id} = current;
                     let {firstName, lastName} = author;
+                    let fullName = firstName + ' ' + lastName;
                     allCommentPagesObject[id] = {
                         page: commentsPage,
                         records: allCommentsRecords
                     };
-                    let tr = createTableRow(title, firstName + ' ' + lastName);
+                    let tr = createTableRow(title, fullName);
                     let tdNum = tr.querySelectorAll('td')[0];
                     tdNum.textContent = `#${currentBookNum}`;
                     currentBookNum++;
@@ -93,7 +75,55 @@ function attachEvents() {
                     allDomElements.tbody.appendChild(tr);
                 }
 
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
 
+    function loadFirstPage(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        page = 1;
+        allDomElements.searchInput.value = '';
+        allDomElements.searchAuthor.value = '';
+        loadHandler();
+    }
+
+    function createHandler(event) {
+
+        if (event) {
+            event.preventDefault();
+        }
+
+        if (newDomElements.authorInput.value === '' || newDomElements.titleInput.value === '') {
+            return;
+        }
+
+
+        let currentTitle = newDomElements.titleInput.value;
+        let currentAuthor = newDomElements.authorInput.value;
+
+        let payload = JSON.stringify({
+            title: currentTitle,
+            author: currentAuthor
+        });
+
+        let requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: payload
+        };
+
+
+        fetch(BASE_URL, requestOptions)
+            .then(() => {
+                loadHandler(event);
+                newDomElements.authorInput.value = '';
+                newDomElements.titleInput.value = '';
             })
             .catch((err) => {
                 console.error(err);
@@ -101,14 +131,75 @@ function attachEvents() {
 
     }
 
-    function loadFirstPage() {
-        page = 1;
-        allDomElements.searchInput.value = '';
-        allDomElements.searchAuthor.value = '';
-        loadHandler();
+    let searchedId;
+
+    function editHandler(event) {
+
+        if (event) {
+            event.preventDefault();
+        }
+
+        let searchedTr = this.parentNode.parentNode;
+
+        searchedId = searchedTr.id;
+        newDomElements.formTitle.textContent = 'Edit FORM';
+
+
+        let tds = Array.from(searchedTr.children);
+        let firstTd = tds[1];
+        let secondTd = tds[2];
+
+
+        newDomElements.titleInput.value = firstTd.textContent;
+        newDomElements.authorInput.value = secondTd.textContent;
+
+
+        allDomElements.form.children[5].remove();
+
+        let saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.addEventListener('click', saveHandler);
+
+        allDomElements.form.appendChild(saveButton);
     }
 
-    let searchedId;
+    function saveHandler(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        let payload = JSON.stringify({
+            title: newDomElements.titleInput.value,
+            author: newDomElements.authorInput.value,
+            id: searchedId
+        });
+
+        let requestOptions = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: payload
+        };
+
+        fetch(`${BASE_URL}/${searchedId}`, requestOptions)
+            .then(() => {
+                loadHandler();
+                newDomElements.titleInput.value = '';
+                newDomElements.authorInput.value = '';
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+
+        this.remove();
+        let submitButton = document.createElement('button');
+        submitButton.textContent = 'Submit';
+        submitButton.addEventListener('click', createHandler);
+        allDomElements.form.appendChild(submitButton);
+
+    }
 
     function deleteHandler(event) {
 
@@ -242,14 +333,14 @@ function attachEvents() {
             }
         }
 
-        fetch(`${COMMENTS_URL}/${id}?page=${allCommentPagesObject[id].page}`, reqOptions)
+        fetch(`${COMMENTS_URL}/${id}?page=${allCommentPagesObject[id].page - 1}`, reqOptions)
             .then((resp) => resp.json())
             .then((data) => {
 
-
                 let values = Array.from(Object.values(data));
-                let [commentList, totalRecords] = values;
+                let [totalRecords, commentList] = values;
                 allCommentsRecords = totalRecords;
+                console.log(commentList);
 
                 if (allCommentsRecords === 0) {
                     span.textContent = 'No comments to show!';
@@ -266,7 +357,7 @@ function attachEvents() {
                     liButtons.appendChild(buttonPrevComment);
                     liButtons.appendChild(buttonNextComment);
                     ul.appendChild(liButtons);
-
+                    console.log(commentList);
                     for (const current of commentList) {
                         let {bookId, comment, commentId} = current;
                         allCommentPagesObject[bookId] = {
@@ -460,15 +551,14 @@ function attachEvents() {
         let url;
         if (bookTitle !== '' && authorToSearch !== '') {
 
-            url = `/api/bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&author=${encodeURIComponent(authorToSearch)}&page=${page}`;
+            url = `/api/bookstore/books?bookTitle=${encodeURIComponent(bookTitle)}&author=${encodeURIComponent(authorToSearch)}&page=${page - 1}`;
         } else if (bookTitle === '' && authorToSearch !== '') {
-            url = `/api/bookstore/books/all?author=${encodeURIComponent(authorToSearch)}&page=${page}`;
+            url = `/api/bookstore/books?author=${encodeURIComponent(authorToSearch)}&page=${page - 1}`;
         } else if (bookTitle !== '' && authorToSearch === '') {
-            url = `/api/bookstore/books/all?bookTitle=${encodeURIComponent(bookTitle)}&page=${page}`;
+            url = `/api/bookstore/books?bookTitle=${encodeURIComponent(bookTitle)}&page=${page - 1}`;
         } else if (bookTitle === '' && authorToSearch === '') {
-            url = `/api/bookstore/books/all?page=${page}`;
+            url = `/api/bookstore/books?page=${page - 1}`;
         }
-
         return url;
     }
 
@@ -488,6 +578,7 @@ function attachEvents() {
         let commentsButton = document.createElement('button');
         commentsButton.textContent = 'Comments';
         commentsButton.addEventListener('click', commentsHandler);
+        editButton.addEventListener('click', editHandler);
         deleteButton.addEventListener('click', deleteHandler);
         tdButtons.appendChild(editButton);
         tdButtons.appendChild(deleteButton);
@@ -499,3 +590,5 @@ function attachEvents() {
         return tr;
     }
 }
+
+

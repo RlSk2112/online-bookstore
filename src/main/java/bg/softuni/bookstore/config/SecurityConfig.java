@@ -1,42 +1,62 @@
 package bg.softuni.bookstore.config;
 
 import bg.softuni.bookstore.domain.constant.RoleName;
-import bg.softuni.bookstore.domain.dto.author.ImportAuthorDto;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import bg.softuni.bookstore.repository.UserRepository;
+import bg.softuni.bookstore.service.BookstoreUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
-        Object importAuthorDto = new ImportAuthorDto();
-        security.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/", "/api/bookstore/books", "/api/bookstore/users/login", "/api/bookstore/users/register")
-                .permitAll()
-                .requestMatchers("/api/bookstore/users/register/user").permitAll()
-                .requestMatchers("/api/bookstore/users/login/user").permitAll()
-                .requestMatchers("/api/bookstore/books").hasRole(RoleName.ADMIN.name())
-                .requestMatchers("src/main/resources/static/css/**").permitAll()
-                .requestMatchers("src/main/resources/static/js/**").permitAll()
-                .requestMatchers("src/main/resources/static/images/**").permitAll()
-                .anyRequest().authenticated()
-        ).formLogin(
-                formLogin -> formLogin.loginPage("/api/bookstore/users/login")
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/api/bookstore/home")
-                        .failureForwardUrl("/api/bookstore/users/login-error")
-        ).logout(
-                logout -> logout
-                        .logoutUrl("/api/bookstore/users/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-        );
+        security
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("/users/register").permitAll()
+                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/books").hasRole(RoleName.USER.name())
+                        .anyRequest().authenticated()
+
+                )
+                .formLogin(
+                        formLogin -> formLogin
+                                .loginPage("/#/users/login")
+                                .loginProcessingUrl("/authenticate")
+                                .usernameParameter("username")
+                                .passwordParameter("password")
+                                .defaultSuccessUrl("/#/books")
+                                .failureForwardUrl("/#/users/login")
+                ).logout(
+                        logout -> logout
+                                .logoutUrl("/api/bookstore/users/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                );
+
         return security.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return new BookstoreUserDetailsService(userRepository);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 }

@@ -6,14 +6,13 @@
     background-color: #e9ecef;
 }
 
-.bg-nav{
+.bg-nav {
     background-color: rgba(0, 0, 0, 27%);
 }
 
-
 body {
-    background: rgb(36,74,186);
-    background: linear-gradient(90deg, rgba(36,74,186,1) 0%, rgba(22,104,115,1) 49%, rgba(42,143,143,1) 100%);
+    background: rgb(36, 74, 186);
+    background: linear-gradient(90deg, rgba(36, 74, 186, 1) 0%, rgba(22, 104, 115, 1) 49%, rgba(42, 143, 143, 1) 100%);
     font-family: "Sentinel A", "Sentinel B", Georgia, "Times New Roman", Times, serif;
     background-position: center;
     background-attachment: fixed;
@@ -21,6 +20,16 @@ body {
     margin-bottom: 5rem;
 }
 
+img {
+    max-width: 200px;
+    max-height: 120px;
+}
+
+#second-img {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
 textarea {
     resize: none;
 }
@@ -56,25 +65,28 @@ footer {
     left: 0;
 }
 
-.container{
+.container {
     width: 90%;
 }
 
-.text-stroke{
-    text-shadow:
-            0.07em 0 white,
-            0 0.07em white,
-            -0.07em 0 white,
-            0 -0.07em white;
+.text-stroke {
+    text-shadow: 0.07em 0 white,
+    0 0.07em white,
+    -0.07em 0 white,
+    0 -0.07em white;
 }
 
-.my-text-color{
-    color: yellow!important;
+.my-text-color {
+    color: yellow !important;
 }
 
-#big-div{
+#big-div {
 }
 
-.badge-secondary{
+.badge-secondary {
     background-color: #720a75;
+}
+
+button {
+    cursor: pointer;
 }

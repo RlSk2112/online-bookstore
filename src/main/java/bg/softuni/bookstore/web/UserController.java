@@ -8,38 +8,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/bookstore/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/login")
-    public ModelAndView login(ModelAndView modelAndView) {
-        modelAndView.setViewName("login");
-        return modelAndView;
+    @GetMapping(value = "/login")
+    public ResponseEntity<String> loginPage(@Valid @RequestBody LoginUserDto loginuserDto) {
+        String loggedUser = userService.login(loginuserDto);
+        return new ResponseEntity<>(loggedUser, HttpStatus.OK);
     }
 
-    @PostMapping("/login/user")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginUserDto loginuserDto) {
-        userService.login(loginuserDto);
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody ImportUserDto importUserDto) {
+        userService.register(importUserDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @GetMapping("/register")
-    public ModelAndView register(ModelAndView modelAndView) {
-        modelAndView.setViewName("register");
-        return modelAndView;
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginUserDto loginuserDto) {
+        String loggedUser = userService.login(loginuserDto);
+        return new ResponseEntity<>(loggedUser, HttpStatus.OK);
     }
 
-    @PostMapping("/register/user")
-    public ResponseEntity<String> register(@Valid @RequestBody ImportUserDto importUserDto) {
-        userService.register(importUserDto);
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        userService.logout();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

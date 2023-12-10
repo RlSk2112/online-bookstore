@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +18,6 @@ public class Book extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String ISBN;
-
-    @Column
-    private Date publicationDate;
-
-    @Column
-    private BigDecimal price;
 
     @ManyToOne(targetEntity = Author.class)
     private Author author;

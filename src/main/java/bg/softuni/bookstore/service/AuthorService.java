@@ -29,14 +29,12 @@ public class AuthorService {
 
     private static final String AUTHORS_FILE_PATH = "src/main/resources/dbinit/authors.json";
 
-    public boolean areImported() {
-        return authorRepository.count() > 0;
-    }
-
     public void importAuthors() throws IOException {
+        if (areImported()) {
+            return;
+        }
 
         ImportAuthorDto[] importAuthorDtos = gson.fromJson(readAuthorsFromFile(), ImportAuthorDto[].class);
-
         StringBuilder stringBuilder = new StringBuilder();
 
         for (@Valid ImportAuthorDto importAuthorDto : importAuthorDtos) {
@@ -56,10 +54,6 @@ public class AuthorService {
         return optionalAuthor.get();
     }
 
-    private String readAuthorsFromFile() throws IOException {
-        return Files.readString(Path.of(AUTHORS_FILE_PATH));
-    }
-
     public Author getAuthorById(Integer author) {
         Optional<Author> optionalAuthor = authorRepository.findById(author.longValue());
         if (optionalAuthor.isEmpty()) {
@@ -73,5 +67,13 @@ public class AuthorService {
         return allAuthors.stream()
                 .map(author -> modelMapper.map(author, ExportAuthorDto.class))
                 .collect(Collectors.toList());
+    }
+
+    private boolean areImported() {
+        return authorRepository.count() > 0;
+    }
+
+    private String readAuthorsFromFile() throws IOException {
+        return Files.readString(Path.of(AUTHORS_FILE_PATH));
     }
 }
