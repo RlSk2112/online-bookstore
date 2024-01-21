@@ -4,12 +4,20 @@ function booksHandler() {
         loadButton: document.getElementById('loadBooks'),
         table: document.getElementsByTagName('table')[0],
         tbody: document.getElementsByTagName('tbody')[0],
+        // form: document.getElementById('form'),
         searchInput: document.getElementById('search-input'),
         searchAuthor: document.getElementById("search-author"),
         searchButton: document.getElementById('search-button'),
         prevPage: document.getElementById('prev-btn'),
         nextPage: document.getElementById('next-btn'),
         pageNum: document.getElementById('page-num')
+    }
+
+    const newDomElements = {
+        // formTitle: allDomElements.form.children[0],
+        // titleInput: allDomElements.form.children[2],
+        // authorInput: allDomElements.form.children[4],
+        // submitButton: allDomElements.form.children[5],
     }
 
     let allCommentPagesObject = {};
@@ -44,11 +52,15 @@ function booksHandler() {
         let url = checkURL();
 
         fetch(url)
-            .then((resp) => resp.json())
+            .then((resp) => {
+                if (!checkResponseIsOk(resp)) {
+                    throw new Error('Invalid credentials!');
+                }
+                return resp.json();
+            })
             .then((data) => {
                 let values = Array.from(Object.values(data));
                 let [totalRecords, bookList] = values;
-                console.log(bookList);
                 totalPages = Math.ceil(totalRecords / 5);
                 allRecords = totalRecords;
                 allDomElements.pageNum.textContent = `Page ${page} of ${totalPages}`;
@@ -91,115 +103,115 @@ function booksHandler() {
         loadHandler();
     }
 
-    function createHandler(event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        if (newDomElements.authorInput.value === '' || newDomElements.titleInput.value === '') {
-            return;
-        }
-
-
-        let currentTitle = newDomElements.titleInput.value;
-        let currentAuthor = newDomElements.authorInput.value;
-
-        let payload = JSON.stringify({
-            title: currentTitle,
-            author: currentAuthor
-        });
-
-        let requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: payload
-        };
-
-
-        fetch(BASE_URL, requestOptions)
-            .then(() => {
-                loadHandler(event);
-                newDomElements.authorInput.value = '';
-                newDomElements.titleInput.value = '';
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-    }
-
-    let searchedId;
-
-    function editHandler(event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        let searchedTr = this.parentNode.parentNode;
-
-        searchedId = searchedTr.id;
-        newDomElements.formTitle.textContent = 'Edit FORM';
-
-
-        let tds = Array.from(searchedTr.children);
-        let firstTd = tds[1];
-        let secondTd = tds[2];
-
-
-        newDomElements.titleInput.value = firstTd.textContent;
-        newDomElements.authorInput.value = secondTd.textContent;
-
-
-        allDomElements.form.children[5].remove();
-
-        let saveButton = document.createElement('button');
-        saveButton.textContent = 'Save';
-        saveButton.addEventListener('click', saveHandler);
-
-        allDomElements.form.appendChild(saveButton);
-    }
-
-    function saveHandler(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        let payload = JSON.stringify({
-            title: newDomElements.titleInput.value,
-            author: newDomElements.authorInput.value,
-            id: searchedId
-        });
-
-        let requestOptions = {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: payload
-        };
-
-        fetch(`${BASE_URL}/${searchedId}`, requestOptions)
-            .then(() => {
-                loadHandler();
-                newDomElements.titleInput.value = '';
-                newDomElements.authorInput.value = '';
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-
-        this.remove();
-        let submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.addEventListener('click', createHandler);
-        allDomElements.form.appendChild(submitButton);
-
-    }
+    // function createHandler(event) {
+    //
+    //     if (event) {
+    //         event.preventDefault();
+    //     }
+    //
+    //     if (newDomElements.authorInput.value === '' || newDomElements.titleInput.value === '') {
+    //         return;
+    //     }
+    //
+    //
+    //     let currentTitle = newDomElements.titleInput.value;
+    //     let currentAuthor = newDomElements.authorInput.value;
+    //
+    //     let payload = JSON.stringify({
+    //         title: currentTitle,
+    //         author: currentAuthor
+    //     });
+    //
+    //     let requestOptions = {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: payload
+    //     };
+    //
+    //
+    //     fetch(BASE_URL, requestOptions)
+    //         .then(() => {
+    //             loadHandler(event);
+    //             newDomElements.authorInput.value = '';
+    //             newDomElements.titleInput.value = '';
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    //
+    // }
+    //
+    // let searchedId;
+    //
+    // function editHandler(event) {
+    //
+    //     if (event) {
+    //         event.preventDefault();
+    //     }
+    //
+    //     let searchedTr = this.parentNode.parentNode;
+    //
+    //     searchedId = searchedTr.id;
+    //     newDomElements.formTitle.textContent = 'Edit FORM';
+    //
+    //
+    //     let tds = Array.from(searchedTr.children);
+    //     let firstTd = tds[1];
+    //     let secondTd = tds[2];
+    //
+    //
+    //     newDomElements.titleInput.value = firstTd.textContent;
+    //     newDomElements.authorInput.value = secondTd.textContent;
+    //
+    //
+    //     allDomElements.form.children[5].remove();
+    //
+    //     let saveButton = document.createElement('button');
+    //     saveButton.textContent = 'Save';
+    //     saveButton.addEventListener('click', saveHandler);
+    //
+    //     allDomElements.form.appendChild(saveButton);
+    // }
+    //
+    // function saveHandler(event) {
+    //     if (event) {
+    //         event.preventDefault();
+    //     }
+    //
+    //     let payload = JSON.stringify({
+    //         title: newDomElements.titleInput.value,
+    //         author: newDomElements.authorInput.value,
+    //         id: searchedId
+    //     });
+    //
+    //     let requestOptions = {
+    //         method: "PATCH",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: payload
+    //     };
+    //
+    //     fetch(`${BASE_URL}/${searchedId}`, requestOptions)
+    //         .then(() => {
+    //             loadHandler();
+    //             newDomElements.titleInput.value = '';
+    //             newDomElements.authorInput.value = '';
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    //
+    //
+    //     this.remove();
+    //     let submitButton = document.createElement('button');
+    //     submitButton.textContent = 'Submit';
+    //     submitButton.addEventListener('click', createHandler);
+    //     allDomElements.form.appendChild(submitButton);
+    //
+    // }
 
     function deleteHandler(event) {
 
@@ -551,11 +563,11 @@ function booksHandler() {
         let url;
         if (bookTitle !== '' && authorToSearch !== '') {
 
-            url = `/api/bookstore/books?bookTitle=${encodeURIComponent(bookTitle)}&author=${encodeURIComponent(authorToSearch)}&page=${page - 1}`;
+            url = `/api/bookstore/books?bookTitle=${bookTitle}&author=${authorToSearch}&page=${page - 1}`;
         } else if (bookTitle === '' && authorToSearch !== '') {
-            url = `/api/bookstore/books?author=${encodeURIComponent(authorToSearch)}&page=${page - 1}`;
+            url = `/api/bookstore/books?author=${authorToSearch}&page=${page - 1}`;
         } else if (bookTitle !== '' && authorToSearch === '') {
-            url = `/api/bookstore/books?bookTitle=${encodeURIComponent(bookTitle)}&page=${page - 1}`;
+            url = `/api/bookstore/books?bookTitle=${bookTitle}&page=${page - 1}`;
         } else if (bookTitle === '' && authorToSearch === '') {
             url = `/api/bookstore/books?page=${page - 1}`;
         }
@@ -591,4 +603,6 @@ function booksHandler() {
     }
 }
 
-
+function checkResponseIsOk(response) {
+    return response.status >= 200 && response.status < 300;
+}

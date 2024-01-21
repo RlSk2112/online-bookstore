@@ -1,5 +1,5 @@
 function loginHandler() {
-    const url = "/api/bookstore/users/login"
+    const url = "/api/bookstore/authenticate"
     let username = document.getElementById('username');
     let password = document.getElementById('password');
     let loginButton = document.getElementById('login-button');
@@ -20,11 +20,21 @@ function loginHandler() {
         }
 
         fetch(url, reqOptions)
-			.then(() => {
+			.then((resp) => {
+                if (!checkResponseIsOk(resp)) {
+                    let elements = document.querySelector('#login-error');
+                    for (const element of elements) {
+                        element.style.display = 'inline-block';
+                    }
+                }
 				window.location.href = "#/books"
 			})
             .catch((err) =>
                 console.error(err)
             );
     }
+}
+
+function checkResponseIsOk(response) {
+    return response.status >= 200 && response.status < 300;
 }

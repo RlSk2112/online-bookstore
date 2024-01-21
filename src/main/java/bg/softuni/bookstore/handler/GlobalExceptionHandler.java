@@ -24,11 +24,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<Object> handleIOException(IOException exception) {
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", String.format("%s", exception.getMessage()));
-
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
@@ -37,7 +35,6 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", String.format("%s", exception.getMessage()));
-
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }

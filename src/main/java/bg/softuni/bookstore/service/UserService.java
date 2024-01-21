@@ -70,10 +70,9 @@ public class UserService {
 
     private void setRole(User user) {
         if (userRepository.count() == 0) {
-            user.setRole(roleService.getAdminRole());
-            return;
+            user.addRole(roleService.getAdminRole());
         }
-        user.setRole(roleService.getUserRole());
+        user.addRole(roleService.getUserRole());
     }
 
     public void logout() {

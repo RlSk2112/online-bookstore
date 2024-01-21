@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "roles")
 @Getter
@@ -20,7 +18,4 @@ public class Role extends BaseEntity {
     @Column
     @Enumerated(value = EnumType.STRING)
     private RoleName roleName;
-
-    @OneToMany(targetEntity = User.class, mappedBy = "role")
-    private List<User> user;
 }

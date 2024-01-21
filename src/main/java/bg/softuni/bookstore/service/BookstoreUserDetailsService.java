@@ -26,7 +26,7 @@ public class BookstoreUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .authorities(map(user.getRole()))
+                .authorities(user.getRoles().stream().map(BookstoreUserDetailsService::map).toList())
                 .build();
     }
 

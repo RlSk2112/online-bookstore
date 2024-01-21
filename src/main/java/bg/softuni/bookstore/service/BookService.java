@@ -4,6 +4,7 @@ import bg.softuni.bookstore.domain.dto.PageResult;
 import bg.softuni.bookstore.domain.dto.book.ExportBookDto;
 import bg.softuni.bookstore.domain.dto.book.ImportBookDto;
 import bg.softuni.bookstore.domain.dto.book.UpdateBookDto;
+import bg.softuni.bookstore.domain.dto.user.UserDetailsDto;
 import bg.softuni.bookstore.domain.entity.Author;
 import bg.softuni.bookstore.domain.entity.Book;
 import bg.softuni.bookstore.repository.BookRepository;
@@ -13,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+//import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -35,7 +40,10 @@ public class BookService {
 
     private static final String BOOKS_FILE_PATH = "src/main/resources/dbinit/books.json";
 
-    public PageResult<ExportBookDto> getAllBooks(Pageable pageable) {
+    public PageResult<ExportBookDto> getAllBooks(Pageable pageable, UserDetailsService viewer) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsDto map = modelMapper.map(authentication, UserDetailsDto.class);
+
         Page<Book> currentPage = bookRepository.findAll(pageable);
         List<ExportBookDto> exportBookDtos = currentPage.stream()
                 .map(book -> modelMapper.map(book, ExportBookDto.class))
@@ -65,10 +73,6 @@ public class BookService {
         }
         Book book = modelMapper.map(importBookDto, Book.class);
         bookRepository.save(book);
-    }
-
-    public long getBooksCount() {
-        return bookRepository.count();
     }
 
     public Book getBookById(Long bookId) {
